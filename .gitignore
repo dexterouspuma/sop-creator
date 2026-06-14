@@ -1,0 +1,31 @@
+# Environment — secrets live here, never commit
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (temporary files, not source)
+uploads/
+
+# Screenshots / test artifacts
+*.png
+screenshot*.py
+
+# Playwright browsers
+playwright-browsers/

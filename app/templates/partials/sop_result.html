@@ -1,0 +1,76 @@
+<div class="sop-result">
+
+    <div class="sop-toolbar">
+        <span class="badge">SOP Generated</span>
+        <div style="display:flex; gap: 0.6rem;">
+            <button class="btn-copy" onclick="copySOP()">&#128203; Copy as Text</button>
+            <button class="btn-pdf" id="btn-pdf" onclick="downloadPDF()">&#8681; Download PDF</button>
+        </div>
+    </div>
+
+    <p class="edit-hint">&#9998; Click any field to edit</p>
+
+    <div id="sop-content">
+        <div contenteditable="true" class="sop-title" id="sop-title">{{ sop.title }}</div>
+
+        <div class="overview-section" style="margin-top: 1.5rem;">
+            <div class="section-label">Overview</div>
+            <div contenteditable="true" class="overview-text" id="sop-overview">{{ sop.overview }}</div>
+        </div>
+
+        <div class="steps-section">
+            <div class="section-label">Steps</div>
+            {% for step in sop.steps %}
+            <div class="step">
+                <div class="step-number">{{ loop.index }}</div>
+                <div class="step-body">
+                    <span contenteditable="true" class="step-title">{{ step.title }}</span>
+                    <span contenteditable="true" class="step-how">{{ step.how }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function copySOP() {
+    const title = document.getElementById('sop-title').innerText;
+    const overview = document.getElementById('sop-overview').innerText;
+    const stepEls = document.querySelectorAll('.step');
+    let stepsText = '';
+    stepEls.forEach((el, i) => {
+        const t = el.querySelector('.step-title').innerText;
+        const h = el.querySelector('.step-how').innerText;
+        stepsText += (i + 1) + '. ' + t + '\n   ' + h + '\n\n';
+    });
+    const full = title + '\n\n' + 'Overview:\n' + overview + '\n\nSteps:\n' + stepsText;
+    navigator.clipboard.writeText(full).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.innerHTML = '&#128203; Copy as Text', 2000);
+    });
+}
+
+function downloadPDF() {
+    const btn = document.getElementById('btn-pdf');
+    btn.disabled = true;
+    btn.innerHTML = 'Generating...';
+
+    const title = document.getElementById('sop-title').innerText || 'SOP';
+    const content = document.getElementById('sop-content');
+
+    const opt = {
+        margin:      [12, 12, 12, 12],
+        filename:    title + '.pdf',
+        image:       { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(content).save().then(() => {
+        btn.disabled = false;
+        btn.innerHTML = '&#8681; Download PDF';
+    });
+}
+</script>

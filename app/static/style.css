@@ -1,0 +1,393 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+
+header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5986 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+header .logo {
+    width: 38px;
+    height: 38px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+header p {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.1rem;
+}
+
+/* ── Main layout ─────────────────────────────────────────────── */
+
+main {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    padding: 0 1.5rem;
+}
+
+/* ── Upload card ─────────────────────────────────────────────── */
+
+.upload-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+    margin-bottom: 2rem;
+}
+
+.upload-card h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-bottom: 1.5rem;
+}
+
+.drop-zone {
+    border: 2px dashed #c8d8eb;
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f8fafd;
+    margin-bottom: 1.25rem;
+    position: relative;
+}
+
+.drop-zone:hover {
+    border-color: #1e3a5f;
+    background: #f0f5ff;
+}
+
+.drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.drop-zone-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.drop-zone-label {
+    font-size: 0.95rem;
+    color: #555;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.drop-zone-label strong {
+    color: #1e3a5f;
+}
+
+.drop-zone-hint {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+#file-name-display {
+    font-size: 0.85rem;
+    color: #1e3a5f;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+}
+
+.btn-generate {
+    width: 100%;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5986 100%);
+    color: white;
+    border: none;
+    padding: 0.85rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.2px;
+}
+
+.btn-generate:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30,58,95,0.35);
+}
+
+.btn-generate:active {
+    transform: translateY(0);
+}
+
+/* ── Spinner ─────────────────────────────────────────────────── */
+
+.htmx-indicator {
+    display: none;
+    text-align: center;
+    padding: 1.5rem 0 0.5rem;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+    display: block;
+}
+
+.spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e0e8f0;
+    border-top-color: #1e3a5f;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 0.75rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.htmx-indicator p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* ── SOP Result ──────────────────────────────────────────────── */
+
+.sop-result {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.sop-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.sop-toolbar .badge {
+    background: #e8f0f8;
+    color: #1e3a5f;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.btn-copy {
+    background: #f0f5ff;
+    color: #1e3a5f;
+    border: 1px solid #c8d8eb;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-copy:hover {
+    background: #1e3a5f;
+    color: white;
+    border-color: #1e3a5f;
+}
+
+.btn-pdf {
+    background: #1e3a5f;
+    color: white;
+    border: 1px solid #1e3a5f;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-pdf:hover {
+    background: #162d4a;
+    border-color: #162d4a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(30,58,95,0.3);
+}
+
+.btn-pdf:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Editable fields ─────────────────────────────────────────── */
+
+[contenteditable="true"] {
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    outline: none;
+    cursor: text;
+}
+
+[contenteditable="true"]:hover {
+    background: #f8fafd;
+}
+
+[contenteditable="true"]:focus {
+    background: #f0f5ff;
+    box-shadow: 0 0 0 2px #1e3a5f33;
+    padding: 0.2rem 0.4rem;
+    margin: -0.2rem -0.4rem;
+}
+
+.edit-hint {
+    font-size: 0.72rem;
+    color: #aaa;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* ── SOP Title ───────────────────────────────────────────────── */
+
+.sop-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+}
+
+/* ── Overview ────────────────────────────────────────────────── */
+
+.overview-section {
+    margin-bottom: 2rem;
+}
+
+.section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 0.5rem;
+}
+
+.overview-text {
+    color: #444;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* ── Steps ───────────────────────────────────────────────────── */
+
+.steps-section h3 {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 1rem;
+}
+
+.step {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 0 1rem;
+    margin-bottom: 1.25rem;
+    align-items: start;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #1e3a5f, #2d5986);
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.step-body {
+    background: #f8fafd;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    border: 1px solid #e8eef5;
+    transition: box-shadow 0.2s ease;
+}
+
+.step-body:hover {
+    box-shadow: 0 2px 8px rgba(30,58,95,0.08);
+}
+
+.step-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.step-how {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.65;
+    display: block;
+}

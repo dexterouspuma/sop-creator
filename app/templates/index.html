@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="upload-card">
+    <h2>Generate an SOP from your document</h2>
+
+    <form
+        hx-post="/upload"
+        hx-target="#sop-output"
+        hx-swap="innerHTML"
+        hx-encoding="multipart/form-data"
+        hx-indicator="#spinner"
+    >
+        <div class="drop-zone">
+            <input
+                type="file"
+                id="file"
+                name="file"
+                accept=".pdf,.docx,.xlsx,.png,.jpg,.jpeg,.txt"
+                required
+                onchange="document.getElementById('file-name-display').textContent = this.files[0]?.name || ''"
+            />
+            <span class="drop-zone-icon">📄</span>
+            <span class="drop-zone-label"><strong>Click to choose a file</strong></span>
+            <span class="drop-zone-hint">Supports PDF, DOCX, XLSX, PNG, JPG, TXT</span>
+        </div>
+
+        <div id="file-name-display"></div>
+
+        <button class="btn-generate" type="submit">Generate SOP</button>
+    </form>
+
+    <div id="spinner" class="htmx-indicator">
+        <div class="spinner"></div>
+        <p>Analyzing document and generating SOP...</p>
+    </div>
+</div>
+
+<div id="sop-output"></div>
+{% endblock %}

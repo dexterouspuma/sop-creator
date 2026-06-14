@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}SOP Creator{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">S</div>
+        <div>
+            <h1>SOP Creator</h1>
+            <p>Upload a document and get a structured Standard Operating Procedure</p>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
