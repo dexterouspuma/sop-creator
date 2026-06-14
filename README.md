@@ -90,17 +90,26 @@ pip install -r requirements.txt --only-binary=:all:
 
 ### 4. Configure environment variables
 
+Copy the example file to create your own `.env`:
+
 ```bash
+# Windows (PowerShell)
+copy .env.example .env
+
+# Mac / Linux
 cp .env.example .env
 ```
 
-Edit `.env` and fill in your values:
+Open `.env` and replace the placeholder values with your actual Azure details:
 
-```
+```env
 AZURE_AIPROJECT_ENDPOINT=https://{your-resource}.services.ai.azure.com/api/projects/{your-project}
 AI_MODEL=gpt-4.1-mini
 APP_ENV=development
 ```
+
+> Find your endpoint in [Azure AI Foundry](https://ai.azure.com) under your project → Overview → Endpoint.
+> Find available model deployment names under your project → Deployments.
 
 ### 5. Log into Azure
 
@@ -109,14 +118,25 @@ az login
 ```
 
 The app uses `DefaultAzureCredential` — no API key needed, just an active Azure CLI session.
+Run `az login` once per session before starting the app.
 
 ### 6. Run the app
 
+Make sure your virtual environment is activated first, then start the server:
+
 ```bash
+# Windows (PowerShell)
+venv\Scripts\activate
+uvicorn main:app --reload
+
+# Mac / Linux
+source venv/bin/activate
 uvicorn main:app --reload
 ```
 
 Open `http://127.0.0.1:8000` in your browser.
+
+> `--reload` automatically restarts the server when you save a file. Remove it in production.
 
 ---
 
