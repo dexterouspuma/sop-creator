@@ -8,9 +8,41 @@
         </div>
     </div>
 
-    <p class="edit-hint">&#9998; Click any field to edit</p>
+    <p class="edit-hint">&#9998; Click any field to edit &nbsp;&bull;&nbsp; &#128247; Drag a photo onto any step, or drop your own image files</p>
+
+    {% if doc_images %}
+    <div class="doc-tray" id="doc-tray">
+        <div class="doc-tray-label">Document images &mdash; drag onto a step</div>
+        <div class="doc-tray-strip">
+            {% for img in doc_images %}
+            <img class="tray-img" src="{{ img }}" draggable="true" alt="Document image {{ loop.index }}" />
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <div id="sop-content">
+        {% if meta and (meta.title or meta.document_number or meta.revision or meta.date) %}
+        <div class="sop-meta" id="sop-meta">
+            <div class="sop-meta-item">
+                <span class="sop-meta-label">Training Title</span>
+                <span contenteditable="true" class="sop-meta-value" id="meta-title">{{ meta.title }}</span>
+            </div>
+            <div class="sop-meta-item">
+                <span class="sop-meta-label">Document No.</span>
+                <span contenteditable="true" class="sop-meta-value" id="meta-docnum">{{ meta.document_number }}</span>
+            </div>
+            <div class="sop-meta-item">
+                <span class="sop-meta-label">Revision</span>
+                <span contenteditable="true" class="sop-meta-value" id="meta-rev">{{ meta.revision }}</span>
+            </div>
+            <div class="sop-meta-item">
+                <span class="sop-meta-label">Date</span>
+                <span contenteditable="true" class="sop-meta-value" id="meta-date">{{ meta.date }}</span>
+            </div>
+        </div>
+        {% endif %}
+
         <div contenteditable="true" class="sop-title" id="sop-title">{{ sop.title }}</div>
 
         <div class="overview-section" style="margin-top: 1.5rem;">
@@ -27,6 +59,13 @@
                     <span contenteditable="true" class="step-title">{{ step.title }}</span>
                     <span contenteditable="true" class="step-how">{{ step.how }}</span>
                 </div>
+                <div class="step-gallery" data-step="{{ loop.index }}">
+                    <div class="gallery-images"></div>
+                    <label class="gallery-add">
+                        + Photo
+                        <input type="file" accept="image/*" multiple class="gallery-file" hidden />
+                    </label>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -34,7 +73,75 @@
 </div>
 
 <script>
+// ── Photo galleries: drag from tray / drop files / browse ──────────────
+(function initGalleries() {
+    function addImage(gallery, src) {
+        const wrap = document.createElement('div');
+        wrap.className = 'gallery-thumb';
+        const im = document.createElement('img');
+        im.src = src;
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'gallery-del';
+        del.title = 'Remove';
+        del.innerHTML = '&times;';
+        del.addEventListener('click', () => wrap.remove());
+        wrap.appendChild(im);
+        wrap.appendChild(del);
+        gallery.querySelector('.gallery-images').appendChild(wrap);
+    }
+
+    function readFiles(gallery, fileList) {
+        [...fileList].forEach(file => {
+            if (!file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = ev => addImage(gallery, ev.target.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    document.querySelectorAll('.tray-img').forEach(img => {
+        img.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', img.getAttribute('src'));
+            e.dataTransfer.effectAllowed = 'copy';
+        });
+    });
+
+    document.querySelectorAll('.step-gallery').forEach(gallery => {
+        gallery.addEventListener('dragover', e => { e.preventDefault(); gallery.classList.add('drag-over'); });
+        gallery.addEventListener('dragleave', () => gallery.classList.remove('drag-over'));
+        gallery.addEventListener('drop', e => {
+            e.preventDefault();
+            gallery.classList.remove('drag-over');
+            if (e.dataTransfer.files && e.dataTransfer.files.length) {
+                readFiles(gallery, e.dataTransfer.files);
+            } else {
+                const src = e.dataTransfer.getData('text/plain');
+                if (src) addImage(gallery, src);
+            }
+        });
+        const fileInput = gallery.querySelector('.gallery-file');
+        if (fileInput) {
+            fileInput.addEventListener('change', () => {
+                readFiles(gallery, fileInput.files);
+                fileInput.value = '';
+            });
+        }
+    });
+})();
+
 function copySOP() {
+    const metaText = [
+        ['Training Title', 'meta-title'],
+        ['Document No.', 'meta-docnum'],
+        ['Revision', 'meta-rev'],
+        ['Date', 'meta-date'],
+    ].map(([label, id]) => {
+        const el = document.getElementById(id);
+        const val = el ? el.innerText.trim() : '';
+        return val ? label + ': ' + val : '';
+    }).filter(Boolean).join('\n');
+
     const title = document.getElementById('sop-title').innerText;
     const overview = document.getElementById('sop-overview').innerText;
     const stepEls = document.querySelectorAll('.step');
@@ -44,7 +151,7 @@ function copySOP() {
         const h = el.querySelector('.step-how').innerText;
         stepsText += (i + 1) + '. ' + t + '\n   ' + h + '\n\n';
     });
-    const full = title + '\n\n' + 'Overview:\n' + overview + '\n\nSteps:\n' + stepsText;
+    const full = (metaText ? metaText + '\n\n' : '') + title + '\n\n' + 'Overview:\n' + overview + '\n\nSteps:\n' + stepsText;
     navigator.clipboard.writeText(full).then(() => {
         const btn = document.querySelector('.btn-copy');
         btn.textContent = '✓ Copied!';
@@ -60,6 +167,9 @@ function downloadPDF() {
     const title = document.getElementById('sop-title').innerText || 'SOP';
     const content = document.getElementById('sop-content');
 
+    // Hide editing controls (remove buttons, "+ Photo") while rendering the PDF
+    content.classList.add('exporting');
+
     const opt = {
         margin:      [12, 12, 12, 12],
         filename:    title + '.pdf',
@@ -69,6 +179,7 @@ function downloadPDF() {
     };
 
     html2pdf().set(opt).from(content).save().then(() => {
+        content.classList.remove('exporting');
         btn.disabled = false;
         btn.innerHTML = '&#8681; Download PDF';
     });
