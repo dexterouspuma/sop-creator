@@ -6,10 +6,50 @@ Upload a PDF, DOCX, XLSX, image, or plain text file — the app extracts the con
 
 ---
 
+## Quick Start
+
+Set up on any machine in a few steps — **no source files need editing**. The app
+authenticates with the Azure CLI (`az login`) and reads its settings from `.env`.
+
+```powershell
+git clone https://github.com/dexterouspuma/sop-creator.git
+cd sop-creator
+
+# 1. Virtual environment
+python -m venv venv
+venv\Scripts\activate                  # Windows
+# source venv/bin/activate             # macOS / Linux
+
+# 2. Dependencies (--only-binary avoids C++ build errors on some Python versions)
+pip install -r requirements.txt --only-binary=:all:
+
+# 3. Environment file — copy, then fill in the two values inside
+copy .env.example .env                  # Windows
+# cp .env.example .env                  # macOS / Linux
+
+# 4. Authenticate (account must have access to the Azure AI Foundry project)
+az login
+
+# 5. Run
+uvicorn main:app --reload
+```
+
+Then open **http://127.0.0.1:8000**.
+
+> The only values you must provide are **`AZURE_AIPROJECT_ENDPOINT`** and
+> **`AI_MODEL`** in `.env`. No API key is needed — authentication is handled by
+> your `az login` session via `DefaultAzureCredential`.
+
+See [Getting Started](#getting-started) below for a step-by-step walkthrough.
+
+---
+
 ## Features
 
 - **Multi-format ingestion** — PDF, DOCX, XLSX, PNG, JPG, TXT
 - **AI extraction** — Azure AI (GPT-4.1-mini) reads the document and identifies major steps and how to perform them
+- **Document metadata** — capture Training Title, Document Number, Revision, and Date, shown as a document-control header in the SOP and PDF
+- **Per-step reference photos** — drag images the app found in your document onto any step, or drop your own image files; included in the PDF export
 - **Inline editing** — click any field in the generated SOP to edit it directly
 - **Download as PDF** — exports the edited SOP as a formatted A4 PDF
 - **Copy as Text** — copies the full SOP to clipboard as plain text
