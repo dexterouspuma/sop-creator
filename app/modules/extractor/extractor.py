@@ -35,8 +35,11 @@ def _extract_pdf(file_bytes: bytes) -> list:
         text += page.get_text()
 
     if text.strip():
-        # Text-based PDF — send extracted text, faster and cheaper
-        return [{"type": "text", "text": text}]
+        # Text-based PDF — send extracted text, faster and cheaper.
+        # Also pull embedded images so they can be offered as step references.
+        blocks = [{"type": "text", "text": text}]
+        blocks.extend(_extract_pdf_images(doc))
+        return blocks
     else:
         # Scanned/image PDF — send raw bytes to Claude vision
         return [{
@@ -47,6 +50,28 @@ def _extract_pdf(file_bytes: bytes) -> list:
                 "data": base64.standard_b64encode(file_bytes).decode()
             }
         }]
+
+
+def _extract_pdf_images(doc, min_dimension: int = 100) -> list:
+    """Extract embedded raster images from a PDF, skipping tiny icons/logos."""
+    blocks = []
+    seen = set()
+    for page in doc:
+        for img in page.get_images(full=True):
+            xref = img[0]
+            if xref in seen:
+                continue
+            seen.add(xref)
+            try:
+                pix = fitz.Pixmap(doc, xref)
+                if pix.width < min_dimension or pix.height < min_dimension:
+                    continue
+                if pix.n - pix.alpha >= 4:  # CMYK / other → convert to RGB
+                    pix = fitz.Pixmap(fitz.csRGB, pix)
+                blocks.append(_image_block("image/png", pix.tobytes("png")))
+            except Exception:
+                continue
+    return blocks
 
 
 # ── DOCX ─────────────────────────────────────────────────────────────────────

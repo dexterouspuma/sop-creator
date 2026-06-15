@@ -74,6 +74,85 @@ main {
     margin-bottom: 1.5rem;
 }
 
+/* ── Metadata fields (upload form) ───────────────────────────── */
+
+.meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.meta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.meta-field-wide {
+    grid-column: 1 / -1;
+}
+
+.meta-field span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #999;
+}
+
+.meta-field input {
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #1a1a2e;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #c8d8eb;
+    border-radius: 8px;
+    background: #f8fafd;
+    transition: all 0.15s ease;
+}
+
+.meta-field input:focus {
+    outline: none;
+    border-color: #1e3a5f;
+    background: #fff;
+    box-shadow: 0 0 0 2px #1e3a5f22;
+}
+
+/* ── Metadata header (result / PDF) ──────────────────────────── */
+
+.sop-meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem 1.5rem;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    background: #f8fafd;
+    border: 1px solid #e8eef5;
+    border-radius: 10px;
+}
+
+.sop-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.sop-meta-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #999;
+}
+
+.sop-meta-value {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    min-height: 1.2em;
+}
+
 .drop-zone {
     border: 2px dashed #c8d8eb;
     border-radius: 12px;
@@ -344,7 +423,7 @@ main {
 
 .step {
     display: grid;
-    grid-template-columns: 40px 1fr;
+    grid-template-columns: 40px 1fr 150px;
     gap: 0 1rem;
     margin-bottom: 1.25rem;
     align-items: start;
@@ -390,4 +469,128 @@ main {
     color: #555;
     line-height: 1.65;
     display: block;
+}
+
+/* ── Document images tray ────────────────────────────────────── */
+
+.doc-tray {
+    background: #f8fafd;
+    border: 1px solid #e8eef5;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.doc-tray-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 0.6rem;
+}
+
+.doc-tray-strip {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+}
+
+.tray-img {
+    height: 64px;
+    width: auto;
+    border-radius: 8px;
+    border: 1px solid #c8d8eb;
+    cursor: grab;
+    flex-shrink: 0;
+    transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.tray-img:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30,58,95,0.2);
+}
+
+.tray-img:active { cursor: grabbing; }
+
+/* ── Per-step photo gallery ──────────────────────────────────── */
+
+.step-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    border: 1px dashed #d2deeb;
+    border-radius: 10px;
+    padding: 0.5rem;
+    min-height: 64px;
+    transition: all 0.15s ease;
+}
+
+.step-gallery.drag-over {
+    border-color: #1e3a5f;
+    background: #f0f5ff;
+}
+
+.gallery-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.gallery-thumb {
+    position: relative;
+    line-height: 0;
+}
+
+.gallery-thumb img {
+    max-width: 100%;
+    max-height: 110px;
+    border-radius: 6px;
+    border: 1px solid #e8eef5;
+}
+
+.gallery-del {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: #1e3a5f;
+    color: white;
+    font-size: 0.8rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.gallery-del:hover { background: #c0392b; }
+
+.gallery-add {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    text-align: center;
+    padding: 0.3rem;
+    border-radius: 6px;
+    background: #f0f5ff;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.gallery-add:hover { background: #e0ecff; }
+
+/* Hide editing affordances while exporting to PDF */
+.exporting .gallery-del,
+.exporting .gallery-add { display: none !important; }
+
+.exporting .step-gallery {
+    border: none;
+    padding: 0;
+    min-height: 0;
 }

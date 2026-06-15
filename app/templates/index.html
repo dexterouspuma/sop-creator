@@ -11,6 +11,25 @@
         hx-encoding="multipart/form-data"
         hx-indicator="#spinner"
     >
+        <div class="meta-grid">
+            <label class="meta-field meta-field-wide">
+                <span>Training Title</span>
+                <input type="text" name="title" placeholder="Receiving Process SOP" />
+            </label>
+            <label class="meta-field">
+                <span>Document Number</span>
+                <input type="text" name="document_number" placeholder="SOP-001" />
+            </label>
+            <label class="meta-field">
+                <span>Revision</span>
+                <input type="text" name="revision" value="00" />
+            </label>
+            <label class="meta-field">
+                <span>Date</span>
+                <input type="date" name="date" />
+            </label>
+        </div>
+
         <div class="drop-zone">
             <input
                 type="file"
